@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffffff">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="SHAHEEN SEARCH — a private, local-first search workspace with an editable personal index and source directory.">
+  <title>SHAHEEN SEARCH — By Shaheen Empire</title>
+  <style>
+    :root { color-scheme: light; --black:#000; --white:#fff; --line:2px solid #000; --thin:1px solid #000; }
+    * { box-sizing:border-box; }
+    html { background:var(--white); color:var(--black); scroll-behavior:smooth; }
+    body { margin:0; min-height:100vh; background:var(--white); color:var(--black); font-family:Arial,Helvetica,sans-serif; }
+    button,input,select,textarea { font:inherit; color:var(--black); }
+    button { border:var(--line); background:var(--white); padding:11px 15px; font-weight:700; cursor:pointer; }
+    button:hover, button:focus-visible { background:var(--black); color:var(--white); outline:2px solid var(--black); outline-offset:3px; }
+    button:disabled { background:var(--white); color:var(--black); cursor:not-allowed; border-style:dashed; }
+    input,select,textarea { width:100%; border:var(--line); border-radius:0; padding:13px 14px; background:var(--white); outline-offset:3px; }
+    input:focus,select:focus,textarea:focus,button:focus-visible,a:focus-visible { outline:2px solid var(--black); outline-offset:3px; }
+    input::placeholder,textarea::placeholder { color:var(--black); opacity:1; }
+    ::selection { background:var(--black); color:var(--white); }
+    a { color:var(--black); text-decoration:underline; text-underline-offset:3px; overflow-wrap:anywhere; }
+    a:hover { background:var(--black); color:var(--white); }
+    .topbar { border-bottom:var(--line); display:flex; justify-content:space-between; align-items:center; gap:16px; padding:14px clamp(16px,4vw,48px); }
+    .brand { font-weight:900; letter-spacing:.12em; font-size:16px; }
+    .brand small { display:block; font-weight:700; letter-spacing:.18em; font-size:9px; margin-top:4px; }
+    .top-actions { display:flex; gap:8px; flex-wrap:wrap; }
+    .top-actions button { padding:8px 11px; font-size:12px; }
+    main { width:min(1120px,calc(100% - 32px)); margin:0 auto; }
+    .hero { padding:clamp(38px,8vw,92px) 0 34px; text-align:center; }
+    .mark { width:52px; height:52px; border:var(--line); margin:0 auto 17px; display:grid; place-items:center; font-size:23px; font-weight:900; }
+    h1 { margin:0; font-size:clamp(34px,7vw,66px); letter-spacing:.075em; font-weight:900; }
+    .tagline { font-size:12px; font-weight:700; letter-spacing:.22em; margin:12px 0 28px; }
+    .searchbox { width:min(790px,100%); margin:0 auto; display:grid; grid-template-columns:1fr auto; gap:0; }
+    .searchbox input { min-width:0; border-right:0; min-height:57px; font-size:17px; }
+    .searchbox button { min-width:118px; }
+    .search-hint { margin:12px 0 0; font-size:12px; }
+    .quick { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin:22px auto 0; }
+    .quick button { font-size:12px; padding:8px 11px; }
+    .toolbar { display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:14px; border-top:var(--line); border-bottom:var(--line); padding:15px 0; margin-top:32px; }
+    .tabs { display:flex; flex-wrap:wrap; gap:6px; }
+    .tabs button { font-size:12px; padding:8px 10px; }
+    .tabs button[aria-pressed="true"] { background:var(--black); color:var(--white); }
+    .view-tools { display:flex; gap:7px; flex-wrap:wrap; }
+    .view-tools button { font-size:12px; padding:8px 10px; }
+    .notice { border:var(--line); padding:12px 14px; margin:18px 0; font-size:13px; line-height:1.5; }
+    .results-head { display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:8px; margin:22px 0 13px; }
+    .results-head h2 { margin:0; font-size:19px; }
+    #resultCount { font-size:12px; font-weight:700; }
+    .research { border:var(--line); padding:17px; margin:18px 0; }
+    .research h3 { margin:0 0 8px; font-size:16px; }
+    .research p { margin:8px 0; line-height:1.55; font-size:14px; }
+    .research .disclaimer { font-size:11px; font-weight:700; border-top:var(--thin); padding-top:10px; margin-top:12px; }
+    .results { display:grid; gap:12px; margin-bottom:30px; }
+    .result { border:var(--thin); padding:16px; display:grid; gap:8px; }
+    .result-top { display:flex; justify-content:space-between; gap:10px; align-items:center; flex-wrap:wrap; }
+    .category { border:var(--thin); padding:4px 7px; font-size:10px; font-weight:900; letter-spacing:.09em; text-transform:uppercase; }
+    .result h3 { margin:0; font-size:18px; line-height:1.35; }
+    .result p { margin:0; font-size:14px; line-height:1.5; }
+    .result-url { font-size:12px; }
+    .result-actions { display:flex; gap:7px; flex-wrap:wrap; }
+    .result-actions button { font-size:11px; padding:7px 9px; }
+    .empty { border:var(--line); padding:25px; text-align:center; line-height:1.5; }
+    .panels { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; margin:34px 0; }
+    .panel { border:var(--line); padding:18px; min-width:0; }
+    .panel h2 { font-size:18px; margin:0 0 8px; }
+    .panel p { font-size:13px; line-height:1.5; margin:8px 0 14px; }
+    .field { display:grid; gap:6px; margin:11px 0; }
+    .field label { font-size:12px; font-weight:800; }
+    .field textarea { min-height:82px; resize:vertical; }
+    .panel-actions { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .panel-actions button { font-size:12px; }
+    .checkbox { display:flex; gap:9px; align-items:flex-start; font-size:12px; line-height:1.4; margin:12px 0; }
+    .checkbox input { width:17px; height:17px; flex:0 0 auto; margin:0; accent-color:#000; }
+    .stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:14px; }
+    .stat { border:var(--thin); padding:10px; text-align:center; }
+    .stat strong { display:block; font-size:20px; }
+    .stat span { font-size:10px; font-weight:700; }
+    footer { border-top:var(--line); margin-top:40px; padding:22px 16px 32px; text-align:center; font-size:11px; line-height:1.6; }
+    .modal-backdrop { position:fixed; inset:0; z-index:10; padding:16px; background:#fff; display:none; overflow:auto; }
+    .modal-backdrop.open { display:block; }
+    .modal { width:min(700px,100%); margin:5vh auto; border:var(--line); padding:20px; background:#fff; }
+    .modal-head { display:flex; justify-content:space-between; gap:12px; align-items:center; }
+    .modal-head h2 { margin:0; }
+    .close { font-size:20px; line-height:1; min-width:42px; }
+    .status { min-height:20px; font-size:12px; font-weight:700; margin-top:8px; }
+    .muted { font-size:12px; }
+    .hidden { display:none !important; }
+    @media(max-width:700px) {
+      .topbar { align-items:flex-start; }
+      .top-actions { max-width:55%; justify-content:flex-end; }
+      .searchbox { grid-template-columns:1fr; gap:8px; }
+      .searchbox input { border-right:var(--line); }
+      .searchbox button { min-height:48px; }
+      .panels { grid-template-columns:1fr; }
+      .toolbar { align-items:flex-start; }
+    }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } * { animation:none !important; transition:none !important; } }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">SHAHEEN SEARCH<small>BY SHAHEEN EMPIRE</small></div>
+    <div class="top-actions">
+      <button id="openAdd" type="button">+ ADD PAGE</button>
+      <button id="openData" type="button">INDEX DATA</button>
+      <button id="privacyBtn" type="button">PRIVACY</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="mainTitle">
+      <div class="mark" aria-hidden="true">S</div>
+      <h1 id="mainTitle">SHAHEEN SEARCH</h1>
+      <div class="tagline">SEARCH • ORGANIZE • RESEARCH</div>
+      <form class="searchbox" id="searchForm" role="search">
+        <input id="query" type="search" autocomplete="off" maxlength="240" placeholder="Search your index..." aria-label="Search your index">
+        <button type="submit">SEARCH</button>
+      </form>
+      <p class="search-hint">Private local-first search. Your query is processed in this page.</p>
+      <div class="quick" aria-label="Example searches">
+        <button type="button" data-query="science">SCIENCE</button>
+        <button type="button" data-query="programming">PROGRAMMING</button>
+        <button type="button" data-query="health">HEALTH</button>
+        <button type="button" data-query="space">SPACE</button>
+        <button type="button" data-query="education">EDUCATION</button>
+      </div>
+    </section>
+
+    <section class="toolbar" aria-label="Search filters">
+      <div class="tabs" id="tabs">
+        <button type="button" data-filter="all" aria-pressed="true">ALL</button>
+        <button type="button" data-filter="web" aria-pressed="false">WEB</button>
+        <button type="button" data-filter="news" aria-pressed="false">NEWS</button>
+        <button type="button" data-filter="images" aria-pressed="false">IMAGES</button>
+        <button type="button" data-filter="videos" aria-pressed="false">VIDEOS</button>
+        <button type="button" data-filter="academic" aria-pressed="false">ACADEMIC</button>
+        <button type="button" data-filter="custom" aria-pressed="false">MY PAGES</button>
+      </div>
+      <div class="view-tools">
+        <button type="button" id="sortBtn">SORT: RELEVANCE</button>
+        <button type="button" id="clearSearch">CLEAR SEARCH</button>
+      </div>
+    </section>
+
+    <div class="notice" id="scopeNotice">
+      <strong>Important:</strong> This single-file edition searches its built-in source directory and the pages you add or import. It does not crawl the live internet. A full-world live index needs a continuously running crawler and storage server; a static GitHub Pages file cannot provide those by itself.
+    </div>
+
+    <section aria-live="polite">
+      <div class="results-head"><h2 id="resultsTitle">Explore the source directory</h2><span id="resultCount">0 RESULTS</span></div>
+      <div id="researchBox" class="research hidden"></div>
+      <div id="results" class="results"></div>
+    </section>
+
+    <section class="panels" aria-label="Manage your search index">
+      <div class="panel">
+        <h2>Add a page to your index</h2>
+        <p>Save a website link with your own title, notes and category. It becomes searchable on this device.</p>
+        <form id="addForm">
+          <div class="field"><label for="pageTitle">PAGE TITLE</label><input id="pageTitle" maxlength="140" required placeholder="Example: Learn JavaScript"></div>
+          <div class="field"><label for="pageUrl">WEBSITE URL (https:// or http://)</label><input id="pageUrl" type="url" maxlength="1000" required placeholder="https://example.com"></div>
+          <div class="field"><label for="pageCategory">CATEGORY</label><select id="pageCategory"><option value="web">Web</option><option value="news">News</option><option value="images">Images</option><option value="videos">Videos</option><option value="academic">Academic</option></select></div>
+          <div class="field"><label for="pageDescription">DESCRIPTION / NOTES</label><textarea id="pageDescription" maxlength="1200" placeholder="What is this page useful for?"></textarea></div>
+          <div class="field"><label for="pageTags">KEYWORDS (comma separated)</label><input id="pageTags" maxlength="500" placeholder="science, learning, reference"></div>
+          <button type="submit">SAVE TO MY INDEX</button>
+          <div class="status" id="addStatus" role="status"></div>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Index controls</h2>
+        <p>Back up your personal index, move it to another browser, or import a collection you own.</p>
+        <div class="stats">
+          <div class="stat"><strong id="totalCount">0</strong><span>TOTAL PAGES</span></div>
+          <div class="stat"><strong id="customCount">0</strong><span>YOUR PAGES</span></div>
+          <div class="stat"><strong id="savedCount">0</strong><span>SAVED</span></div>
+        </div>
+        <label class="checkbox"><input id="historyToggle" type="checkbox"><span>Save recent searches on this device (OFF by default). Search terms are not sent by this app to a search provider.</span></label>
+        <div class="panel-actions">
+          <button id="exportBtn" type="button">EXPORT JSON</button>
+          <button id="importBtn" type="button">IMPORT JSON</button>
+          <button id="savedBtn" type="button">SHOW SAVED</button>
+          <button id="resetBtn" type="button">RESET MY DATA</button>
+        </div>
+        <input id="importFile" class="hidden" type="file" accept=".json,application/json">
+        <div class="status" id="dataStatus" role="status"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>What this engine can and cannot do</h2>
+      <p><strong>Works now:</strong> searches the built-in directory and your private local index; ranks matches; filters by category; creates a local research digest from matching descriptions; validates and saves URLs; imports and exports JSON; stores bookmarks and optional history on this device.</p>
+      <p><strong>Not included:</strong> live global crawling, automatic webpage-content extraction, real-time news feeds, image/video crawling, generative AI answers, or a guarantee of absolute security. These need infrastructure or model capabilities that cannot be created by browser-only code without external services.</p>
+      <p><strong>URL check:</strong> adding a URL verifies its format only. Browsers block a static page from freely reading most other websites, so this file does not claim that a site is online or safe just because its URL is valid.</p>
+    </section>
+  </main>
+
+  <footer>
+    <strong>SHAHEEN SEARCH</strong> · BY SHAHEEN EMPIRE<br>
+    ONE FILE · HTML + CSS + VANILLA JAVASCRIPT · BLACK &amp; WHITE ONLY<br>
+    No third-party scripts · No search API · No analytics · No automatic network requests<br>
+    Opening an external result takes you to that website, which then follows its own privacy policy.
+  </footer>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+      <div class="modal-head"><h2 id="modalTitle">SHAHEEN SEARCH</h2><button class="close" id="closeModal" type="button" aria-label="Close">×</button></div>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script>
+  (() => {
+    'use strict';
+    const STORE_KEY = 'shaheen_search_index_v1';
+    const SAVED_KEY = 'shaheen_search_saved_v1';
+    const HISTORY_KEY = 'shaheen_search_history_v1';
+    const SETTINGS_KEY = 'shaheen_search_settings_v1';
+    const MAX_IMPORT_BYTES = 2 * 1024 * 1024;
+    const MAX_RECORDS = 5000;
+
+    const starter = [
+      {id:'b01',title:'NASA',url:'https://www.nasa.gov/',category:'web',description:'Official United States space agency: missions, astronomy, Earth science, space exploration and educational resources.',tags:['space','science','astronomy','earth','education','research'],source:'built-in'},
+      {id:'b02',title:'NASA Image and Video Library',url:'https://images.nasa.gov/',category:'images',description:'Searchable public collection of NASA space, Earth, mission and science imagery and video.',tags:['images','photos','videos','space','planets','astronomy'],source:'built-in'},
+      {id:'b03',title:'World Health Organization',url:'https://www.who.int/',category:'web',description:'International public health information, health topics, reports, guidance and global health data.',tags:['health','medicine','public health','research','wellbeing'],source:'built-in'},
+      {id:'b04',title:'WHO News',url:'https://www.who.int/news',category:'news',description:'Official World Health Organization news, statements and updates.',tags:['health','news','medicine','global'],source:'built-in'},
+      {id:'b05',title:'MDN Web Docs',url:'https://developer.mozilla.org/',category:'web',description:'Developer documentation and learning resources for HTML, CSS, JavaScript and web platform technologies.',tags:['programming','coding','html','css','javascript','developer','web'],source:'built-in'},
+      {id:'b06',title:'Python Documentation',url:'https://docs.python.org/3/',category:'web',description:'Official Python language documentation, tutorials, library references and usage guides.',tags:['programming','coding','python','software','developer'],source:'built-in'},
+      {id:'b07',title:'GitHub Explore',url:'https://github.com/explore',category:'web',description:'Discover software projects, open-source repositories and developer communities.',tags:['programming','coding','open source','software','developer'],source:'built-in'},
+      {id:'b08',title:'W3C Standards',url:'https://www.w3.org/standards/',category:'academic',description:'Web standards and technical specifications from the World Wide Web Consortium.',tags:['web','standards','html','css','accessibility','technology'],source:'built-in'},
+      {id:'b09',title:'PubMed',url:'https://pubmed.ncbi.nlm.nih.gov/',category:'academic',description:'Search biomedical and life-sciences literature from the United States National Library of Medicine.',tags:['health','medicine','biology','research','papers','science'],source:'built-in'},
+      {id:'b10',title:'arXiv',url:'https://arxiv.org/',category:'academic',description:'Open-access research papers in physics, mathematics, computer science and related fields.',tags:['research','papers','physics','math','mathematics','computer science','AI'],source:'built-in'},
+      {id:'b11',title:'NASA Science',url:'https://science.nasa.gov/',category:'academic',description:'Research and learning about the universe, solar system, Earth and space missions.',tags:['science','space','astronomy','research','education'],source:'built-in'},
+      {id:'b12',title:'World Bank Data',url:'https://data.worldbank.org/',category:'academic',description:'Open development indicators and statistics about countries, people, economies and the environment.',tags:['data','economics','statistics','countries','research','global'],source:'built-in'},
+      {id:'b13',title:'UN Data',url:'https://data.un.org/',category:'academic',description:'United Nations statistical databases and international development data.',tags:['data','statistics','global','countries','research'],source:'built-in'},
+      {id:'b14',title:'Khan Academy',url:'https://www.khanacademy.org/',category:'web',description:'Free lessons and practice in mathematics, science, computing, economics and other school subjects.',tags:['education','math','mathematics','science','learning','school'],source:'built-in'},
+      {id:'b15',title:'OpenStax',url:'https://openstax.org/',category:'academic',description:'Free, peer-reviewed, openly licensed textbooks for school and college subjects.',tags:['education','books','textbooks','science','math','learning'],source:'built-in'},
+      {id:'b16',title:'Project Gutenberg',url:'https://www.gutenberg.org/',category:'web',description:'A large collection of free public-domain ebooks and literary works.',tags:['books','reading','literature','history','education'],source:'built-in'},
+      {id:'b17',title:'Wikimedia Commons',url:'https://commons.wikimedia.org/',category:'images',description:'A collaboratively maintained media repository of freely usable images, audio and video files.',tags:['images','photos','media','video','history','science'],source:'built-in'},
+      {id:'b18',title:'Associated Press',url:'https://apnews.com/',category:'news',description:'International news reporting across world events, business, science, technology and culture.',tags:['news','world','current events','journalism'],source:'built-in'},
+      {id:'b19',title:'Reuters',url:'https://www.reuters.com/',category:'news',description:'Global reporting on world affairs, business, markets, technology and other topics.',tags:['news','world','business','technology','journalism'],source:'built-in'},
+      {id:'b20',title:'BBC News',url:'https://www.bbc.com/news',category:'news',description:'International news coverage, explainers and reporting from the BBC.',tags:['news','world','international','journalism'],source:'built-in'},
+      {id:'b21',title:'TED Talks',url:'https://www.ted.com/talks',category:'videos',description:'Talks and presentations about ideas, science, education, technology and society.',tags:['videos','talks','education','science','technology'],source:'built-in'},
+      {id:'b22',title:'Khan Academy Videos',url:'https://www.khanacademy.org/',category:'videos',description:'Educational video lessons in mathematics, science, computing and other subjects.',tags:['videos','education','math','science','learning'],source:'built-in'},
+      {id:'b23',title:'Internet Archive',url:'https://archive.org/',category:'web',description:'Digital library offering access to archived websites, books, recordings, films and other materials.',tags:['archive','history','books','videos','research','web'],source:'built-in'},
+      {id:'b24',title:'Smithsonian Institution',url:'https://www.si.edu/',category:'web',description:'Museum, research and educational collections covering history, culture, science and nature.',tags:['history','science','culture','museum','education'],source:'built-in'},
+      {id:'b25',title:'Our World in Data',url:'https://ourworldindata.org/',category:'academic',description:'Research and visualizations about global health, population, poverty, energy and environmental change.',tags:['data','research','health','climate','global','statistics'],source:'built-in'},
+      {id:'b26',title:'NOAA',url:'https://www.noaa.gov/',category:'web',description:'Official ocean, weather, climate and atmospheric science information from NOAA.',tags:['weather','climate','ocean','science','environment'],source:'built-in'},
+      {id:'b27',title:'National Geographic',url:'https://www.nationalgeographic.com/',category:'web',description:'Editorial features and educational material about science, nature, geography and culture.',tags:['nature','geography','animals','science','environment'],source:'built-in'},
+      {id:'b28',title:'Directory of Open Access Journals',url:'https://doaj.org/',category:'academic',description:'A directory of open-access scholarly journals and research publications.',tags:['academic','research','papers','open access','journals'],source:'built-in'},
+      {id:'b29',title:'UNICEF',url:'https://www.unicef.org/',category:'web',description:'Information and reports about children, education, health, protection and humanitarian work.',tags:['children','education','health','global','research'],source:'built-in'},
+      {id:'b30',title:'European Space Agency',url:'https://www.esa.int/',category:'web',description:'European space science, Earth observation, missions and exploration resources.',tags:['space','science','astronomy','satellite','earth'],source:'built-in'}
+    ];
+
+    const $ = (id) => document.getElementById(id);
+    const state = { query:'', filter:'all', sort:'relevance', showSaved:false, index:[], saved:[], history:[], historyEnabled:false };
+    const categories = {web:'Web',news:'News',images:'Images',videos:'Videos',academic:'Academic'};
+    const safeText = (value, max=1200) => String(value ?? '').trim().slice(0,max);
+    const makeId = () => 'u' + Date.now().toString(36) + Math.random().toString(36).slice(2,8);
+    const readJSON = (key, fallback) => { try { const raw=localStorage.getItem(key); return raw ? JSON.parse(raw) : fallback; } catch { return fallback; } };
+    const writeJSON = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); return true; } catch { return false; } };
+    const validUrl = (value) => { try { const u=new URL(value); return (u.protocol==='https:' || u.protocol==='http:') && !!u.hostname; } catch { return false; } };
+    const normalizeRecord = (r, source='custom') => {
+      if (!r || typeof r !== 'object') return null;
+      const title=safeText(r.title,140), url=safeText(r.url,1000), description=safeText(r.description,1200);
+      const category=categories[r.category] ? r.category : 'web';
+      if (!title || !validUrl(url)) return null;
+      const tags=Array.isArray(r.tags) ? r.tags.map(x=>safeText(x,50)).filter(Boolean).slice(0,30) : safeText(r.tags,500).split(',').map(x=>x.trim()).filter(Boolean).slice(0,30);
+      return {id:safeText(r.id,80) || makeId(), title, url, category, description, tags, source};
+    };
+    function loadState() {
+      const custom=readJSON(STORE_KEY, []);
+      state.index=starter.concat(Array.isArray(custom) ? custom.map(x=>normalizeRecord(x,'custom')).filter(Boolean) : []);
+      state.saved=readJSON(SAVED_KEY, []); if (!Array.isArray(state.saved)) state.saved=[];
+      state.history=readJSON(HISTORY_KEY, []); if (!Array.isArray(state.history)) state.history=[];
+      const settings=readJSON(SETTINGS_KEY, {}); state.historyEnabled=settings.historyEnabled===true;
+      $('historyToggle').checked=state.historyEnabled;
+      updateStats();
+    }
+    function persistCustom() {
+      const custom=state.index.filter(x=>x.source==='custom');
+      const ok=writeJSON(STORE_KEY,custom);
+      if (!ok) $('dataStatus').textContent='Storage is full or blocked. Export your index and free browser storage.';
+      updateStats(); return ok;
+    }
+    function updateStats() {
+      $('totalCount').textContent=state.index.length.toLocaleString();
+      $('customCount').textContent=state.index.filter(x=>x.source==='custom').length.toLocaleString();
+      $('savedCount').textContent=state.saved.length.toLocaleString();
+    }
+    function tokens(value) { return safeText(value,3000).toLocaleLowerCase().normalize('NFKC').match(/[\p{L}\p{N}]+/gu) || []; }
+    function scoreRecord(item, query) {
+      const q=query.toLocaleLowerCase().trim(); const words=[...new Set(tokens(q))];
+      if (!words.length) return 0;
+      const title=item.title.toLocaleLowerCase(), desc=item.description.toLocaleLowerCase(), tags=(item.tags||[]).join(' ').toLocaleLowerCase(), url=item.url.toLocaleLowerCase();
+      let score=0, matched=0;
+      if (title.includes(q)) score+=15;
+      if (desc.includes(q)) score+=5;
+      if (tags.includes(q)) score+=8;
+      if (url.includes(q)) score+=2;
+      for (const word of words) {
+        let hit=false;
+        if (title.includes(word)) { score+=7; hit=true; }
+        if (tags.includes(word)) { score+=5; hit=true; }
+        if (desc.includes(word)) { score+=2; hit=true; }
+        if (url.includes(word)) { score+=1; hit=true; }
+        if (hit) matched++;
+      }
+      if (matched===words.length) score+=words.length*3;
+      if (item.source==='custom') score+=1;
+      return matched ? score : 0;
+    }
+    function currentResults() {
+      let list=state.index.map(item=>({item,score:scoreRecord(item,state.query)})).filter(x=>state.query ? x.score>0 : true);
+      if (state.filter!=='all') list=list.filter(x=>state.filter==='custom' ? x.item.source==='custom' : x.item.category===state.filter);
+      if (state.showSaved) list=list.filter(x=>state.saved.includes(x.item.id));
+      if (state.sort==='alpha') list.sort((a,b)=>a.item.title.localeCompare(b.item.title));
+      else list.sort((a,b)=>b.score-a.score || a.item.title.localeCompare(b.item.title));
+      return list;
+    }
+    function make(tag, className, text) {
+      const el=document.createElement(tag);
+      if (className) el.className=className;
+      if (text!==undefined) el.textContent=text;
+      return el;
+    }
+    function showMessage(target, message) { $(target).textContent=message; }
+    function createResearch(list) {
+      const box=$('researchBox'); box.replaceChildren();
+      if (!state.query || !list.length) { box.classList.add('hidden'); return; }
+      box.classList.remove('hidden');
+      const h=make('h3','','Local Research Notes'); box.append(h);
+      const p=make('p','',`Your query matched ${list.length} item(s) in the SHAHEEN local index. These notes are assembled from the descriptions stored in this browser; they are not generated by an AI model and do not represent a live internet investigation.`); box.append(p);
+      const ul=make('ul');
+      list.slice(0,5).forEach(({item})=>{
+        const li=make('li'); const strong=make('strong','',item.title+': '); const span=make('span','',item.description || 'No notes were supplied for this page.'); li.append(strong,span); ul.append(li);
+      });
+      box.append(ul);
+      const foot=make('p','disclaimer','Verify important claims on the linked source pages. Ranking is a local relevance estimate, not an endorsement or safety certification.'); box.append(foot);
+    }
+    function render() {
+      const list=currentResults();
+      $('resultsTitle').textContent=state.showSaved?'Your saved pages':state.query?`Results for “${state.query}”`:'Explore the source directory';
+      $('resultCount').textContent=`${list.length.toLocaleString()} RESULT${list.length===1?'':'S'}`;
+      const host=$('results'); host.replaceChildren();
+      createResearch(list);
+      if (!list.length) {
+        const empty=make('div','empty',state.query?'No matching pages in your local index. Try another word, add the page yourself, or import a JSON index.':'There are no pages in this view yet. Add a page or change the filter.'); host.append(empty); return;
+      }
+      const fragment=document.createDocumentFragment();
+      list.slice(0,200).forEach(({item,score})=>{
+        const card=make('article','result');
+        const top=make('div','result-top');
+        top.append(make('span','category',item.source==='custom'?'MY PAGE':categories[item.category]||'WEB'));
+        const scoreLabel=state.query?`MATCH SCORE ${score}`:'SHAHEEN DIRECTORY'; top.append(make('span','muted',scoreLabel));
+        const h=make('h3'); const link=make('a','',item.title); link.href=item.url; link.target='_blank'; link.rel='noopener noreferrer'; link.referrerPolicy='no-referrer'; h.append(link);
+        const desc=make('p','',item.description||'No description provided.');
+        const url=make('div','result-url'); url.textContent=item.url;
+        const tags=make('div','muted',item.tags.length?'KEYWORDS: '+item.tags.join(', '):'');
+        const actions=make('div','result-actions');
+        const save=make('button','',state.saved.includes(item.id)?'UNSAVE':'SAVE'); save.type='button'; save.addEventListener('click',()=>toggleSaved(item.id));
+        actions.append(save);
+        if(item.source==='custom') { const del=make('button','','DELETE'); del.type='button'; del.addEventListener('click',()=>deleteRecord(item.id)); actions.append(del); }
+        card.append(top,h,desc,url,tags,actions); fragment.append(card);
+      });
+      host.append(fragment);
+      if(list.length>200) host.append(make('p','muted',`Showing the first 200 of ${list.length} matches. Add more specific words to narrow your search.`));
+    }
+    function doSearch(value) {
+      state.query=safeText(value,240); $('query').value=state.query; state.showSaved=false;
+      if(state.historyEnabled && state.query) {
+        state.history=[state.query,...state.history.filter(x=>x!==state.query)].slice(0,20);
+        writeJSON(HISTORY_KEY,state.history);
+      }
+      render();
+    }
+    function toggleSaved(id) {
+      state.saved=state.saved.includes(id)?state.saved.filter(x=>x!==id):[id,...state.saved];
+      writeJSON(SAVED_KEY,state.saved); updateStats(); render();
+    }
+    function deleteRecord(id) {
+      if(!window.confirm('Delete this page from your personal index?')) return;
+      state.index=state.index.filter(x=>!(x.id===id && x.source==='custom'));
+      state.saved=state.saved.filter(x=>x!==id); persistCustom(); writeJSON(SAVED_KEY,state.saved); render();
+    }
+    function setFilter(filter) {
+      state.filter=filter;
+      document.querySelectorAll('#tabs button').forEach(btn=>btn.setAttribute('aria-pressed',String(btn.dataset.filter===filter)));
+      render();
+    }
+    function downloadFile(filename, content, type) {
+      const blob=new Blob([content],{type}); const url=URL.createObjectURL(blob); const a=make('a'); a.href=url; a.download=filename; document.body.append(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+    }
+    function exportIndex() {
+      const data={format:'shaheen-search-index',version:1,createdAt:new Date().toISOString(),records:state.index.filter(x=>x.source==='custom').map(({id,title,url,category,description,tags})=>({id,title,url,category,description,tags}))};
+      downloadFile('shaheen-search-index.json',JSON.stringify(data,null,2),'application/json'); showMessage('dataStatus','Your personal index export has been created.');
+    }
+    function importIndex(file) {
+      if(!file) return;
+      if(file.size>MAX_IMPORT_BYTES){showMessage('dataStatus','Import rejected: file exceeds 2 MB.');return;}
+      const reader=new FileReader();
+      reader.onload=()=>{
+        try {
+          const parsed=JSON.parse(String(reader.result||'')); const rows=Array.isArray(parsed)?parsed:parsed.records;
+          if(!Array.isArray(rows)) throw new Error('Expected a JSON array or an object with a records array.');
+          const incoming=rows.slice(0,MAX_RECORDS).map(x=>normalizeRecord(x,'custom')).filter(Boolean);
+          const existing=new Set(state.index.map(x=>x.url)); let added=0;
+          for(const item of incoming){ if(!existing.has(item.url)){state.index.push(item);existing.add(item.url);added++;} }
+          persistCustom(); render(); showMessage('dataStatus',`Imported ${added} new page(s). Invalid entries and duplicate URLs were skipped.`);
+        } catch(err){showMessage('dataStatus','Import failed: '+safeText(err.message,180));}
+        $('importFile').value='';
+      };
+      reader.onerror=()=>showMessage('dataStatus','Could not read that file.'); reader.readAsText(file);
+    }
+    function openModal(title, content) {
+      $('modalTitle').textContent=title; $('modalContent').replaceChildren(); $('modalContent').append(content); $('modalBackdrop').classList.add('open'); $('closeModal').focus();
+    }
+    function closeModal(){ $('modalBackdrop').classList.remove('open'); }
+    function privacyDialog(){
+      const wrap=make('div');
+      [
+        'Search terms are matched locally against the index stored in this browser.',
+        'This file contains no fetch calls, external scripts, search APIs, analytics pixels or automatic third-party requests.',
+        'Your custom pages, bookmarks and optional search history are stored in this browser using localStorage. Clearing browser site data can delete them; export a backup first.',
+        'When you click a result, you leave SHAHEEN SEARCH. The destination website may collect data under its own privacy policy.',
+        'GitHub Pages or another hosting provider may process ordinary web-server request metadata such as IP address when someone loads the website. This app cannot control hosting logs.',
+        'No software can honestly promise 100% security or immunity from every attack. Keep your browser updated and do not store secrets in page notes.'
+      ].forEach(t=>wrap.append(make('p','',t)));
+      openModal('PRIVACY & SECURITY',wrap);
+    }
+    function dataDialog(){
+      const wrap=make('div');
+      wrap.append(make('p','','This one-file version keeps its starter directory inside the HTML and saves your personal additions in this browser. Use JSON export to back up your personal pages.'));
+      const p=make('p','','To publish: create a public GitHub repository, upload this exact file at the repository root, rename it to index.html, then enable GitHub Pages from the main branch and root folder.'); wrap.append(p);
+      const p2=make('p','','To move your own index to another browser, export JSON here and import the same JSON there.'); wrap.append(p2);
+      openModal('INDEX DATA & PUBLISHING',wrap);
+    }
+
+    $('searchForm').addEventListener('submit',e=>{e.preventDefault();doSearch($('query').value);});
+    $('query').addEventListener('input',()=>{if(!$('query').value.trim())doSearch('');});
+    document.querySelectorAll('[data-query]').forEach(btn=>btn.addEventListener('click',()=>doSearch(btn.dataset.query)));
+    $('tabs').addEventListener('click',e=>{const btn=e.target.closest('button[data-filter]');if(btn)setFilter(btn.dataset.filter);});
+    $('sortBtn').addEventListener('click',()=>{state.sort=state.sort==='relevance'?'alpha':'relevance';$('sortBtn').textContent='SORT: '+(state.sort==='alpha'?'A–Z':'RELEVANCE');render();});
+    $('clearSearch').addEventListener('click',()=>{doSearch('');setFilter('all');});
+    $('addForm').addEventListener('submit',e=>{
+      e.preventDefault();
+      const item=normalizeRecord({title:$('pageTitle').value,url:$('pageUrl').value,category:$('pageCategory').value,description:$('pageDescription').value,tags:$('pageTags').value},'custom');
+      if(!item){showMessage('addStatus','Please enter a title and a valid http:// or https:// URL.');return;}
+      if(state.index.some(x=>x.url===item.url)){showMessage('addStatus','That URL is already in your index.');return;}
+      state.index.push(item); const ok=persistCustom(); $('addForm').reset(); doSearch(item.title); setFilter('custom');
+      showMessage('addStatus',ok?'Page saved to this browser and is now searchable.':'Page is shown for this session, but browser storage could not save it.');
+    });
+    $('historyToggle').addEventListener('change',()=>{
+      state.historyEnabled=$('historyToggle').checked; writeJSON(SETTINGS_KEY,{historyEnabled:state.historyEnabled});
+      if(!state.historyEnabled){state.history=[];localStorage.removeItem(HISTORY_KEY);}
+      showMessage('dataStatus',state.historyEnabled?'Search history is enabled locally.':'Search history is off and its stored entries were cleared.');
+    });
+    $('exportBtn').addEventListener('click',exportIndex);
+    $('importBtn').addEventListener('click',()=>$('importFile').click());
+    $('importFile').addEventListener('change',e=>importIndex(e.target.files[0]));
+    $('savedBtn').addEventListener('click',()=>{state.showSaved=!state.showSaved;$('savedBtn').textContent=state.showSaved?'SHOW ALL PAGES':'SHOW SAVED';render();});
+    $('resetBtn').addEventListener('click',()=>{
+      if(!window.confirm('Remove all your custom pages, bookmarks and search history from this browser? The built-in directory will remain.'))return;
+      state.index=starter.slice();state.saved=[];state.history=[];writeJSON(STORE_KEY,[]);writeJSON(SAVED_KEY,[]);localStorage.removeItem(HISTORY_KEY);state.showSaved=false;updateStats();render();showMessage('dataStatus','Your personal data has been cleared.');
+    });
+    $('openAdd').addEventListener('click',()=>$('pageTitle').focus());
+    $('openData').addEventListener('click',dataDialog);
+    $('privacyBtn').addEventListener('click',privacyDialog);
+    $('closeModal').addEventListener('click',closeModal);
+    $('modalBackdrop').addEventListener('click',e=>{if(e.target===$('modalBackdrop'))closeModal();});
+    document.addEventListener('keydown',e=>{
+      if(e.key==='Escape')closeModal();
+      if(e.key==='/' && !['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName) && !$('modalBackdrop').classList.contains('open')){e.preventDefault();$('query').focus();}
+    });
+
+    loadState();
+    render();
+  })();
+  </script>
+</body>
+</html>
